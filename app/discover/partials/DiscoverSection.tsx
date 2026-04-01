@@ -1,7 +1,7 @@
 "use client";
 
 import { Icon } from "@iconify/react";
-import { ProjectCard } from "../components/ProjectCard";
+import { ProjectCard } from "../../components/ProjectCard";
 
 const FILTER_OPTIONS = [
   { label: "Bidang" },
@@ -88,17 +88,19 @@ const PROJECTS = [
   },
 ];
 
-export function ProjectSection({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
+const DISCOVER_PROJECTS = [...PROJECTS, ...PROJECTS, ...PROJECTS];
+
+export function DiscoverSection({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   return (
-    <section className="w-full py-16 bg-white px-8 md:px-12">
+    <section className="w-full py-12 bg-white px-8 md:px-12">
       <div className="container mx-auto max-w-7xl">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-10">
-          <button className="flex items-center gap-2 px-6 py-2.5 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-12">
+          <button className="flex items-center gap-2 px-6 py-2.5 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm">
             Populer
             <Icon icon="lucide:chevron-down" className="w-4 h-4 text-gray-400" />
           </button>
           
-          <div className="flex items-center rounded-full border border-gray-200 overflow-hidden bg-white p-1">
+          <div className="flex items-center rounded-full border border-gray-200 overflow-hidden bg-white p-1 shadow-sm">
             <span className="px-5 text-sm font-bold border-r border-gray-200">
               Discover
             </span>
@@ -106,17 +108,19 @@ export function ProjectSection({ isLoggedIn = false }: { isLoggedIn?: boolean })
             {FILTER_OPTIONS.map((filter) => (
               <button 
                 key={filter.label} 
-                className="flex items-center gap-1.5 px-4 lg:px-6 py-1.5 text-sm font-medium hover:bg-gray-50 transition-colors border-r border-gray-200 last:border-0"
+                className="flex items-center gap-1.5 px-4 lg:px-6 py-2 text-sm font-medium hover:bg-gray-50 transition-colors border-r border-gray-200 last:border-0"
               >
                 {filter.label}
                 <Icon icon="lucide:chevron-down" className="w-4 h-4 text-gray-400" />
               </button>
             ))}
           </div>
+
+          <div className="w-[100px] hidden md:block"></div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {PROJECTS.map((project, idx) => (
+          {DISCOVER_PROJECTS.map((project, idx) => (
             <ProjectCard key={idx} {...project} isLoggedIn={isLoggedIn} />
           ))}
         </div>

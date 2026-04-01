@@ -3,12 +3,12 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react";
-import { RegisterDialog } from "./RegisterDialog";
 import { BookmarkButton } from "./BookmarkButton";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
-interface ProjectCardProps {
-  id?: string;
+interface RegisteredProjectCardProps {
+  id: string;
   location: string;
   topic: string;
   title: string;
@@ -17,10 +17,11 @@ interface ProjectCardProps {
   participantsMax: number;
   topicColor: string;
   cardColor: string;
+  status: string; // WAITING, APPROVED, CANCELLED
   isLoggedIn?: boolean;
 }
 
-export function ProjectCard({
+export function RegisteredProjectCard({
   id,
   location,
   topic,
@@ -30,8 +31,31 @@ export function ProjectCard({
   participantsMax,
   topicColor,
   cardColor,
-  isLoggedIn = false,
-}: ProjectCardProps) {
+  status,
+  isLoggedIn = true,
+}: RegisteredProjectCardProps) {
+  const getStatusDisplay = (status: string) => {
+    switch (status.toUpperCase()) {
+      case "APPROVED":
+        return {
+          label: "Approve",
+          className: "bg-[#71bc45] hover:bg-[#63a43c] text-white cursor-default",
+        };
+      case "CANCELLED":
+        return {
+          label: "Dibatalkan",
+          className: "bg-[#c24136] hover:bg-[#a6372e] text-white cursor-default",
+        };
+      default:
+        return {
+          label: "Waiting",
+          className: "bg-[#1a1824] hover:bg-black text-white cursor-default",
+        };
+    }
+  };
+
+  const statusInfo = getStatusDisplay(status);
+
   return (
     <Card className="p-2 sm:p-3 overflow-hidden rounded-2xl flex flex-col h-full border border-gray-100 shadow-sm transition-all hover:shadow-md">
       <div
@@ -58,7 +82,7 @@ export function ProjectCard({
             {title}
           </h3>
           {desc && (
-            <p className="mt-2 text-xs text-gray-400 leading-relaxed font-light">
+            <p className="mt-2 text-xs text-gray-400 leading-relaxed font-light line-clamp-3">
               {desc}
             </p>
           )}
@@ -73,27 +97,21 @@ export function ProjectCard({
           </span>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex gap-2">
           <Link
-            href={id ? `/discover/${id}` : "#"}
-            className="text-xs font-medium text-gray-500 hover:text-black transition-colors"
+            href={`/discover/${id}`}
+            className="text-xs font-semibold text-gray-500 hover:text-black transition-colors self-center px-2"
           >
             Detail
           </Link>
-          <RegisterDialog
-            projectId={id}
-            location={location}
-            topic={topic}
-            topicColor={topicColor}
-            description={desc || title}
-            isLoggedIn={isLoggedIn}
+          <Button
+            className={cn(
+              "h-8 rounded-full px-8 text-xs font-bold border-none shadow-sm transition-all",
+              statusInfo.className
+            )}
           >
-            <Button
-              className="h-8 rounded-full px-5 text-xs font-medium bg-[#1a1824] hover:bg-black text-white cursor-pointer"
-            >
-              Daftar
-            </Button>
-          </RegisterDialog>
+            {statusInfo.label}
+          </Button>
         </div>
       </div>
     </Card>

@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String         @id @default(uuid())
+  fullName     String
+  email        String         @unique
+  password     String
+  phone        String?
+  age          Int?
+  country      String?
+  city         String?
+  originCity   String?
+  status       String?        // Mahasiswa, Profesional, dll
+  scholarship  String?
+  university   String?
+  expertise    String?        // Bidang keahlian
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  bookmarks    Bookmark[]
+  registrations Registration[]
+}
+
+model Project {
+  id                String         @id @default(uuid())
+  title             String
+  description       String?
+  location          String?
+  topic             String?
+  topicColor        String?
+  cardColor         String?
+  participantsCount Int            @default(0)
+  participantsMax   Int            @default(100)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  bookmarkedBy      Bookmark[]
+  registrations     Registration[]
+}
+
+model Bookmark {
+  id        String   @id @default(uuid())
+  userId    String
+  projectId String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, projectId])
+}
+
+model Registration {
+  id           String   @id @default(uuid())
+  userId       String
+  projectId    String
+  note         String?
+  status       String   @default("WAITING") // WAITING, APPROVED, CANCELLED
+  registeredAt DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project      Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, projectId])
+}
