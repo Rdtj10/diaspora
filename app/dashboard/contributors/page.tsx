@@ -94,7 +94,7 @@ export default async function KelolaKontributorPage() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {registrations.length > 0 ? (
-                registrations.map((reg) => (
+                registrations.map((reg: any) => (
                   <tr key={reg.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-5">
                       <div className="flex flex-col">
