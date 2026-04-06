@@ -28,7 +28,7 @@ export default async function KelolaKontributorPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        {statCards.map((card) => (
+        {statCards.map((card: any) => (
           <div key={card.label} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
             <p className="text-xs font-semibold text-gray-500 mb-2">{card.label}</p>
             <div className="flex items-baseline gap-1">
@@ -158,7 +158,7 @@ export default async function KelolaKontributorPage() {
                 Sebelumnya
             </button>
             <div className="flex items-center gap-1 mx-4">
-                {[1, 2, 3, "...", 7].map((n, i) => (
+                {[1, 2, 3, "...", 7].map((n: any, i: number) => (
                     <button 
                         key={i} 
                         className={`w-7 h-7 rounded-md text-[11px] font-bold flex items-center justify-center transition-all ${

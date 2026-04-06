@@ -133,13 +133,13 @@ export async function getFilterOptions() {
       },
     });
 
-    const topics = Array.from(new Set(projects.map((p) => p.topic).filter(Boolean)));
+    const topics = Array.from(new Set(projects.map((p: any) => p.topic).filter(Boolean)));
     const provinces = new Set<string>();
     const cities = new Set<string>();
 
-    projects.forEach((p) => {
+    projects.forEach((p: any) => {
       if (p.location) {
-        const parts = p.location.split(",").map((s) => s.trim());
+        const parts = p.location.split(",").map((s: string) => s.trim());
         if (parts.length >= 1) provinces.add(parts[0]);
         if (parts.length >= 2) cities.add(parts[1]);
         else if (parts.length === 1) cities.add(parts[0]); // If only one part, treat as both

@@ -95,7 +95,7 @@ export function RegisterDialog({
             <label className="text-sm font-semibold text-gray-900">Note</label>
             <Textarea
               value={note}
-              onChange={(e) => setNote(e.target.value)}
+              onChange={(e: any) => setNote(e.target.value)}
               placeholder="Sampaikan sedikit tentang ketertarikan atau kontribusi yang ingin kamu berikan pada topik ini..."
               className="min-h-[100px] resize-none rounded-xl border-gray-200 bg-gray-50/50 text-sm placeholder:text-gray-400 focus-visible:ring-[#c24136]/20"
             />
