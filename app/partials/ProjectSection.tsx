@@ -12,7 +12,7 @@ interface ProjectSectionProps {
 export function ProjectSection({ 
   projects, 
   isLoggedIn = false,
-  bookmarkedIds = new Set()
+  bookmarkedIds = new Set<string>()
 }: ProjectSectionProps) {
   const FILTER_OPTIONS = [
     { label: "Bidang" },

@@ -38,7 +38,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
     .filter((p: any) => p.id !== project.id)
     .slice(0, 4);
 
-  const bookmarkedIds = new Set(bookmarks.map((b: any) => b.projectId));
+  const bookmarkedIds = new Set<string>(bookmarks.map((b: any) => b.projectId));
 
   return (
     <main className="min-h-screen bg-white">

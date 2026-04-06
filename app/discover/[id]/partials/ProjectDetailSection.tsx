@@ -30,7 +30,7 @@ export function ProjectDetailSection({
   isLoggedIn = false, 
   isBookmarked = false,
   relatedProjects = [],
-  bookmarkedIds = new Set()
+  bookmarkedIds = new Set<string>()
 }: ProjectDetailProps) {
   const router = useRouter();
 

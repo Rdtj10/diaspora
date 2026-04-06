@@ -30,7 +30,7 @@ interface DiscoverSectionProps {
 export function DiscoverSection({ 
   projects, 
   isLoggedIn = false,
-  bookmarkedIds = new Set(),
+  bookmarkedIds = new Set<string>(),
   filterOptions,
   activeFilters
 }: DiscoverSectionProps) {

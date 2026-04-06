@@ -8,7 +8,7 @@ export default async function Home() {
   const projects = await getAllProjects();
   const { bookmarks } = await getUserProjects();
   
-  const bookmarkedIds = new Set(bookmarks.map(b => b.projectId));
+  const bookmarkedIds = new Set<string>(bookmarks.map((b: any) => b.projectId));
 
   return (
     <main className="flex-1 w-full bg-white">

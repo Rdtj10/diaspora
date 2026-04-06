@@ -20,7 +20,7 @@ export default async function DiscoverPage({
   const { bookmarks } = await getUserProjects();
   const filterOptions = await getFilterOptions();
 
-  const bookmarkedIds = new Set(bookmarks.map(b => b.projectId));
+  const bookmarkedIds = new Set<string>(bookmarks.map((b: any) => b.projectId));
 
   return (
     <main className="min-h-screen bg-white">
