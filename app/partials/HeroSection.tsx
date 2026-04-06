@@ -33,7 +33,7 @@ export function HeroSection() {
                 <strong>Explore</strong> <span className="text-gray-500 font-normal">berbagai topik di Indonesia</span>
               </p>
               <div className="flex flex-wrap gap-2">
-                {TOPICS.map((topic) => (
+                {TOPICS.map((topic: any) => (
                   <TopicBadge key={topic.label} label={topic.label} colorClass={topic.colorClass} />
                 ))}
               </div>

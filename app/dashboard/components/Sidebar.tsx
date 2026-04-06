@@ -35,7 +35,7 @@ export function Sidebar() {
   return (
     <aside className="w-64 h-full bg-white border-r border-gray-100 flex flex-col py-6">
       <div className="flex-1 px-4 space-y-2">
-        {MENU_ITEMS.map((item) => {
+        {MENU_ITEMS.map((item: any) => {
           const isActive = pathname === item.href;
           return (
             <Link

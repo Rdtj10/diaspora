@@ -39,7 +39,7 @@ export function SignUpForm() {
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) {
-    setFormValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setFormValues((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
   function goToStep(target: number) {
@@ -52,7 +52,7 @@ export function SignUpForm() {
     setError(null);
 
     const formData = new FormData();
-    Object.entries(formValues).forEach(([key, value]) => {
+    Object.entries(formValues).forEach(([key, value]: [string, any]) => {
       formData.append(key, value);
     });
 
@@ -79,7 +79,7 @@ export function SignUpForm() {
 
       {/* Step Indicator */}
       <div className="flex items-center justify-center gap-2">
-        {[1, 2, 3].map((s) => (
+        {[1, 2, 3].map((s: number) => (
           <div key={s} className="flex items-center gap-2">
             <button
               type="button"

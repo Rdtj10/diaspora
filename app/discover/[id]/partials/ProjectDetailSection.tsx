@@ -116,7 +116,7 @@ export function ProjectDetailSection({
         <div className="mt-24">
           <h2 className="text-2xl font-bold text-gray-900 mb-8">More like this</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {relatedProjects.map((p, idx) => (
+            {relatedProjects.map((p: any, idx: number) => (
               <ProjectCard 
                 key={p.id} 
                 id={p.id}

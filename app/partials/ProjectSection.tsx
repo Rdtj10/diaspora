@@ -34,7 +34,7 @@ export function ProjectSection({
               Discover
             </span>
 
-            {FILTER_OPTIONS.map((filter) => (
+            {FILTER_OPTIONS.map((filter: any) => (
               <button 
                 key={filter.label} 
                 className="flex items-center gap-1.5 px-4 lg:px-6 py-1.5 text-sm font-medium hover:bg-gray-50 transition-colors border-r border-gray-200 last:border-0"
@@ -47,7 +47,7 @@ export function ProjectSection({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {projects.map((project) => (
+          {projects.map((project: any) => (
             <ProjectCard 
               key={project.id} 
               id={project.id}

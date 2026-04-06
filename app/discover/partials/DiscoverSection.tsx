@@ -94,7 +94,7 @@ export function DiscoverSection({
               Discover
             </span>
 
-            {FILTER_CONFIG.map((filter) => (
+            {FILTER_CONFIG.map((filter: any) => (
               <DropdownMenu key={filter.key}>
                 <DropdownMenuTrigger asChild>
                   <button 
@@ -115,7 +115,7 @@ export function DiscoverSection({
                   >
                     Semua {filter.label}
                   </DropdownMenuItem>
-                  {filter.options.map((opt) => (
+                  {filter.options.map((opt: any) => (
                     <DropdownMenuItem 
                       key={opt}
                       onClick={() => handleFilterChange(filter.key, opt)}
@@ -134,7 +134,7 @@ export function DiscoverSection({
 
         {projects.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {projects.map((project) => (
+            {projects.map((project: any) => (
               <ProjectCard 
                 key={project.id} 
                 id={project.id}

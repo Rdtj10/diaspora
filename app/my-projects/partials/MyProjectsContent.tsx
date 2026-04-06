@@ -58,7 +58,7 @@ export function MyProjectsContent({ registrations, bookmarks }: MyProjectsConten
         {activeTab === "terdaftar" ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {registrations.length > 0 ? (
-              registrations.map((reg) => (
+              registrations.map((reg: any) => (
                 <RegisteredProjectCard
                   key={reg.id}
                   id={reg.project.id}
@@ -82,7 +82,7 @@ export function MyProjectsContent({ registrations, bookmarks }: MyProjectsConten
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {bookmarks.length > 0 ? (
-              bookmarks.map((bookmark) => (
+              bookmarks.map((bookmark: any) => (
                 <ProjectCard
                   key={bookmark.id}
                   id={bookmark.project.id}

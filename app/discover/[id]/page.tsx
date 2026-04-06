@@ -30,15 +30,15 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   }
 
   const { bookmarks } = await getUserProjects();
-  const isBookmarked = bookmarks.some(b => b.projectId === project.id);
+  const isBookmarked = bookmarks.some((b: any) => b.projectId === project.id);
   
   // Fetch some other projects as "related"
   const allProjects = await getAllProjects();
   const relatedProjects = allProjects
-    .filter(p => p.id !== project.id)
+    .filter((p: any) => p.id !== project.id)
     .slice(0, 4);
 
-  const bookmarkedIds = new Set(bookmarks.map(b => b.projectId));
+  const bookmarkedIds = new Set(bookmarks.map((b: any) => b.projectId));
 
   return (
     <main className="min-h-screen bg-white">
