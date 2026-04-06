@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { registerForProject } from "@/lib/actions/project.actions";
+import { toast } from "sonner";
 
 interface RegisterDialogProps {
   projectId?: string;
@@ -61,6 +62,7 @@ export function RegisterDialog({
       setOpen(false);
       setNote("");
       setIsLoading(false);
+      toast.success("Berhasil mendaftar ke proyek ini!");
       router.refresh();
     }
   }

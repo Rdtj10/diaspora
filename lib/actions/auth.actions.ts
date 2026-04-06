@@ -19,6 +19,8 @@ const SignUpSchema = z.object({
   university: z.string().optional(),
   scholarship: z.string().optional(),
   expertise: z.string().optional(),
+  studyPeriod: z.string().optional(),
+  cvLink: z.string().optional(),
 });
 
 export async function signUp(formData: FormData) {
@@ -48,10 +50,11 @@ export async function signUp(formData: FormData) {
         password: hashedPassword,
         fullName,
         ...rest,
+        role: "USER" // Default role
       },
     });
 
-    await login(user.id);
+    await login(user.id, user.role);
   } catch (err) {
     console.error("Sign up error:", err);
     return { error: { message: ["Terjadi kesalahan server"] } };
@@ -74,6 +77,7 @@ export async function signIn(formData: FormData) {
   }
 
   const { email, password } = validated.data;
+  let userRole = "USER";
 
   try {
     const user = await prisma.user.findUnique({
@@ -90,13 +94,25 @@ export async function signIn(formData: FormData) {
       return { error: { message: ["Email atau password salah"] } };
     }
 
-    await login(user.id);
+    // DEBUG: Log the role found in the database
+    userRole = (user.role || "USER").toUpperCase();
+    console.log(`[AUTH] Login Success: ${email}, Role: ${userRole}`);
+
+    // Ensure stale sessions are cleared first
+    await logout();
+    await login(user.id, userRole);
   } catch (err) {
     console.error("Sign in error:", err);
     return { error: { message: ["Terjadi kesalahan server"] } };
   }
 
-  redirect("/");
+  if (userRole === "ADMIN") {
+    console.log(`[AUTH] Redirecting to Admin Dashboard...`);
+    redirect("/dashboard/contributors");
+  } else {
+    console.log(`[AUTH] Redirecting to Homepage...`);
+    redirect("/");
+  }
 }
 
 export async function logoutAction() {

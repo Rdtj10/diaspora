@@ -1,6 +1,5 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
 
 const secretKey = "secret";
 const key = new TextEncoder().encode(secretKey);
@@ -20,9 +19,9 @@ export async function decrypt(input: string): Promise<any> {
   return payload;
 }
 
-export async function login(userId: string) {
+export async function login(userId: string, role: string = "USER") {
   const expires = new Date(Date.now() + 2 * 60 * 60 * 1000);
-  const session = await encrypt({ userId, expires });
+  const session = await encrypt({ userId, role, expires });
 
   const cookieStore = await cookies();
   cookieStore.set("session", session, { expires, httpOnly: true });

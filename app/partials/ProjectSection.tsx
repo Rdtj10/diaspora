@@ -3,92 +3,23 @@
 import { Icon } from "@iconify/react";
 import { ProjectCard } from "../components/ProjectCard";
 
-const FILTER_OPTIONS = [
-  { label: "Bidang" },
-  { label: "Provinsi" },
-  { label: "Kota" },
-];
+interface ProjectSectionProps {
+  projects: any[];
+  isLoggedIn?: boolean;
+  bookmarkedIds?: Set<string>;
+}
 
-const PROJECTS = [
-  {
-    location: "Aceh, Banda Aceh",
-    topic: "Lingkungan",
-    title: "Pengelolaan Sampah yang Belum Berkelanjutan",
-    desc: "Banyak sekolah di daerah terpencil masih memiliki keterbatasan akses terhadap teknologi pembelajaran digital.",
-    participantsCount: 12,
-    participantsMax: 100,
-    topicColor: "#a3d139",
-    cardColor: "#f4ebfb",
-  },
-  {
-    location: "Banjarmasin",
-    topic: "Kesehatan",
-    title: "Rendahnya Kesadaran Kesehatan Mental di Masyarakat",
-    desc: "Banyak sekolah di daerah terpencil masih memiliki keterbatasan akses terhadap teknologi pembelajaran digital.",
-    participantsCount: 12,
-    participantsMax: 100,
-    topicColor: "#468cd2",
-    cardColor: "#fdf0e6",
-  },
-  {
-    location: "Makassar",
-    topic: "Ekonomi",
-    title: "Tantangan ekonomi lokal, pengembangan UMKM, dan pemberdayaan ekonomi masyarakat.",
-    participantsCount: 12,
-    participantsMax: 100,
-    topicColor: "#bec83b",
-    cardColor: "#edfbee",
-  },
-  {
-    location: "DKI Jakarta, Cakung",
-    topic: "Pendidikan",
-    title: "Akses Pendidikan Digital di Daerah Terpencil",
-    desc: "Banyak sekolah di daerah terpencil masih memiliki keterbatasan akses terhadap teknologi pembelajaran digital.",
-    participantsCount: 12,
-    participantsMax: 100,
-    topicColor: "#cc49af",
-    cardColor: "#fcfce9",
-  },
-  {
-    location: "Bali, Bali",
-    topic: "Teknologi",
-    title: "Permasalahan terkait transformasi digital, literasi teknologi, dan pengembangan sistem.",
-    participantsCount: 12,
-    participantsMax: 100,
-    topicColor: "#595e69",
-    cardColor: "#eafdfd",
-  },
-  {
-    location: "Medan",
-    topic: "Sosial",
-    title: "Permasalahan sosial seperti kesenjangan, pemberdayaan komunitas, dan inklusi sosial.",
-    participantsCount: 12,
-    participantsMax: 100,
-    topicColor: "#5e6ad2",
-    cardColor: "#fbeef4",
-  },
-  {
-    location: "Makassar",
-    topic: "Ekonomi",
-    title: "Tantangan ekonomi lokal, pengembangan UMKM, dan pemberdayaan ekonomi masyarakat.",
-    participantsCount: 12,
-    participantsMax: 100,
-    topicColor: "#bec83b",
-    cardColor: "#edfbee",
-  },
-  {
-    location: "DKI Jakarta, Cakung",
-    topic: "Pendidikan",
-    title: "Akses Pendidikan Digital di Daerah Terpencil",
-    desc: "Banyak sekolah di daerah terpencil masih memiliki keterbatasan akses terhadap teknologi pembelajaran digital.",
-    participantsCount: 12,
-    participantsMax: 100,
-    topicColor: "#cc49af",
-    cardColor: "#fcfce9",
-  },
-];
+export function ProjectSection({ 
+  projects, 
+  isLoggedIn = false,
+  bookmarkedIds = new Set()
+}: ProjectSectionProps) {
+  const FILTER_OPTIONS = [
+    { label: "Bidang" },
+    { label: "Provinsi" },
+    { label: "Kota" },
+  ];
 
-export function ProjectSection({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   return (
     <section className="w-full py-16 bg-white px-8 md:px-12">
       <div className="container mx-auto max-w-7xl">
@@ -116,8 +47,21 @@ export function ProjectSection({ isLoggedIn = false }: { isLoggedIn?: boolean })
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {PROJECTS.map((project, idx) => (
-            <ProjectCard key={idx} {...project} isLoggedIn={isLoggedIn} />
+          {projects.map((project) => (
+            <ProjectCard 
+              key={project.id} 
+              id={project.id}
+              location={project.location}
+              topic={project.topic}
+              title={project.title}
+              desc={project.description}
+              participantsCount={project.participantsCount}
+              participantsMax={project.participantsMax}
+              topicColor={project.topicColor}
+              cardColor={project.cardColor}
+              isLoggedIn={isLoggedIn} 
+              initialBookmarked={bookmarkedIds.has(project.id)}
+            />
           ))}
         </div>
 

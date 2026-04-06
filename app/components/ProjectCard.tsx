@@ -18,6 +18,7 @@ interface ProjectCardProps {
   topicColor: string;
   cardColor: string;
   isLoggedIn?: boolean;
+  initialBookmarked?: boolean;
 }
 
 export function ProjectCard({
@@ -31,6 +32,7 @@ export function ProjectCard({
   topicColor,
   cardColor,
   isLoggedIn = false,
+  initialBookmarked = false,
 }: ProjectCardProps) {
   return (
     <Card className="p-2 sm:p-3 overflow-hidden rounded-2xl flex flex-col h-full border border-gray-100 shadow-sm transition-all hover:shadow-md">
@@ -50,7 +52,13 @@ export function ProjectCard({
               {topic}
             </span>
           </div>
-          <BookmarkButton projectId={id} isLoggedIn={isLoggedIn} size={18} className="mt-0.5" />
+          <BookmarkButton 
+            projectId={id} 
+            isLoggedIn={isLoggedIn} 
+            initialBookmarked={initialBookmarked}
+            size={18} 
+            className="mt-0.5" 
+          />
         </div>
 
         <div className="flex-1 flex flex-col justify-center">

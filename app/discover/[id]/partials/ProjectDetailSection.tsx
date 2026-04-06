@@ -8,54 +8,30 @@ import { RegisterDialog } from "@/app/components/RegisterDialog";
 import { BookmarkButton } from "@/app/components/BookmarkButton";
 
 interface ProjectDetailProps {
-  id: string;
+  project: {
+    id: string;
+    title: string;
+    description: string | null;
+    location: string | null;
+    topic: string | null;
+    topicColor: string | null;
+    cardColor: string | null;
+    participantsCount: number;
+    participantsMax: number;
+  };
   isLoggedIn?: boolean;
+  isBookmarked?: boolean;
+  relatedProjects?: any[];
+  bookmarkedIds?: Set<string>;
 }
 
-const RELATED_PROJECTS = [
-  {
-    location: "DKI Jakarta, Cakung",
-    topic: "Pendidikan",
-    title: "Akses Pendidikan Digital di Daerah Terpencil",
-    desc: "Banyak sekolah di daerah terpencil masih memiliki keterbatasan akses terhadap teknologi pembelajaran digital.",
-    participantsCount: 12,
-    participantsMax: 100,
-    topicColor: "#cc49af",
-    cardColor: "#fcfce9",
-  },
-  {
-    location: "DKI Jakarta, Cakung",
-    topic: "Pendidikan",
-    title: "Akses Pendidikan Digital di Daerah Terpencil",
-    desc: "Banyak sekolah di daerah terpencil masih memiliki keterbatasan akses terhadap teknologi pembelajaran digital.",
-    participantsCount: 12,
-    participantsMax: 100,
-    topicColor: "#cc49af",
-    cardColor: "#fcfce9",
-  },
-  {
-    location: "DKI Jakarta, Cakung",
-    topic: "Pendidikan",
-    title: "Akses Pendidikan Digital di Daerah Terpencil",
-    desc: "Banyak sekolah di daerah terpencil masih memiliki keterbatasan akses terhadap teknologi pembelajaran digital.",
-    participantsCount: 12,
-    participantsMax: 100,
-    topicColor: "#cc49af",
-    cardColor: "#fcfce9",
-  },
-  {
-    location: "DKI Jakarta, Cakung",
-    topic: "Pendidikan",
-    title: "Akses Pendidikan Digital di Daerah Terpencil",
-    desc: "Banyak sekolah di daerah terpencil masih memiliki keterbatasan akses terhadap teknologi pembelajaran digital.",
-    participantsCount: 12,
-    participantsMax: 100,
-    topicColor: "#cc49af",
-    cardColor: "#fcfce9",
-  },
-];
-
-export function ProjectDetailSection({ id, isLoggedIn = false }: ProjectDetailProps) {
+export function ProjectDetailSection({ 
+  project, 
+  isLoggedIn = false, 
+  isBookmarked = false,
+  relatedProjects = [],
+  bookmarkedIds = new Set()
+}: ProjectDetailProps) {
   const router = useRouter();
 
   return (
@@ -69,9 +45,12 @@ export function ProjectDetailSection({ id, isLoggedIn = false }: ProjectDetailPr
         </button>
 
         <div className="flex flex-col lg:flex-row gap-12 items-start">
-          <div className="w-full lg:w-1/2 rounded-3xl bg-[#fcfce9] p-8 md:p-12 aspect-[4/3] flex items-center justify-center border border-gray-50 shadow-sm transition-all hover:shadow-md">
-            <h1 className="text-3xl md:text-5xl font-bold text-gray-900 leading-tight">
-              Akses Pendidikan Digital di Daerah Terpencil
+          <div 
+            className="w-full lg:w-1/2 rounded-3xl p-8 md:p-12 aspect-[4/3] flex items-center justify-center border border-gray-50 shadow-sm transition-all hover:shadow-md"
+            style={{ backgroundColor: project.cardColor || "#fcfce9" }}
+          >
+            <h1 className="text-3xl md:text-5xl font-bold text-gray-900 leading-tight text-center">
+              {project.title}
             </h1>
           </div>
 
@@ -79,38 +58,51 @@ export function ProjectDetailSection({ id, isLoggedIn = false }: ProjectDetailPr
             <div className="flex items-center justify-between">
               <div className="flex gap-2">
                 <span className="bg-[#c24136] text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">
-                  DKI Jakarta, Cakung
+                  {project.location || "N/A"}
                 </span>
-                <span className="bg-[#cc49af] text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">
-                  Pendidikan
+                <span 
+                  className="text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase"
+                  style={{ backgroundColor: project.topicColor || "#cc49af" }}
+                >
+                  {project.topic || "General"}
                 </span>
               </div>
-              <BookmarkButton projectId={id} isLoggedIn={isLoggedIn} size={24} />
+              <BookmarkButton 
+                projectId={project.id} 
+                isLoggedIn={isLoggedIn} 
+                initialBookmarked={isBookmarked}
+                size={24} 
+              />
             </div>
 
             <div className="space-y-6">
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Lorem ipsum dolor sit amet consectetur. Dictumst sed enim est val putrate accumsan cursus amet. A euismod egestas nulla commodo faucibus. Venenatis ac auctor ut velit id. Vestibulum am elvaus nec pharetea tristique malesuada et. Fermentum sed eu odio velit.
-              </p>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Feugiat quam arcu aliquet felis blandit mauris pharetra ornare. Et neque sit viverra nunc massa arcu dignissim uma et. Sapien elit non pretium in. Hendrerit cura bitur proin ut pulvinar in euismod. Nam ac ultrices eget volutpat. Et donec ligula tempor fusce purus leo.
-              </p>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Arcu nisl sed in nisl at lectus mollis. Egestas aliquet malesuada ipsum es neq ue sit. Sollicitudin ut consectetur uma quam. Id gravida pellentesque a quam. Proin aliquam semper aliquet hna a inet metus faucibus nunc. Condimentum amet habitant isus id faucibus accumsan vitae. Amet at leo a ulamcorper.
+              {project.description ? (
+                <div className="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap">
+                  {project.description}
+                </div>
+              ) : (
+                <p className="text-gray-400 italic text-sm">No description available for this project.</p>
+              )}
+              
+              {/* Added standard Lorem Ipsum for visual content if short */}
+              <p className="text-gray-600 text-sm leading-relaxed opacity-60">
+                Project ini merupakan inisiatif kolaborasi untuk memberikan dampak positif berkelanjutan bagi masyarakat setempat. Partisipasi kamu sangat berharga dalam mewujudkan visi bersama.
               </p>
             </div>
 
             <div className="pt-8 flex items-center justify-between border-t border-gray-100">
               <div className="flex items-center gap-2">
                 <Icon icon="lucide:users" className="w-5 h-5 text-gray-700 font-bold" />
-                <span className="text-lg font-bold text-gray-900">12/100</span>
+                <span className="text-lg font-bold text-gray-900">
+                  {project.participantsCount}/{project.participantsMax}
+                </span>
               </div>
               <RegisterDialog
-                projectId={id}
-                location="DKI Jakarta, Cakung"
-                topic="Pendidikan"
-                topicColor="#cc49af"
-                description="Banyak sekolah di daerah terpencil masih memiliki keterbatasan akses terhadap teknologi pembelajaran digital."
+                projectId={project.id}
+                location={project.location || ""}
+                topic={project.topic || ""}
+                topicColor={project.topicColor || ""}
+                description={project.title}
                 isLoggedIn={isLoggedIn}
               >
                 <Button className="h-12 px-24 rounded-full bg-[#1a1824] hover:bg-black text-white font-bold transition-all shadow-lg shadow-black/10">
@@ -124,8 +116,21 @@ export function ProjectDetailSection({ id, isLoggedIn = false }: ProjectDetailPr
         <div className="mt-24">
           <h2 className="text-2xl font-bold text-gray-900 mb-8">More like this</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {RELATED_PROJECTS.map((project, idx) => (
-              <ProjectCard key={idx} {...project} isLoggedIn={isLoggedIn} />
+            {relatedProjects.map((p, idx) => (
+              <ProjectCard 
+                key={p.id} 
+                id={p.id}
+                location={p.location}
+                topic={p.topic}
+                title={p.title}
+                desc={p.description}
+                participantsCount={p.participantsCount}
+                participantsMax={p.participantsMax}
+                topicColor={p.topicColor}
+                cardColor={p.cardColor}
+                isLoggedIn={isLoggedIn} 
+                initialBookmarked={bookmarkedIds.has(p.id)}
+              />
             ))}
           </div>
         </div>
