@@ -1,9 +1,26 @@
-import { getRegistrations, getRegistrationStats } from "@/lib/actions/project.actions";
+import { getRegistrations, getRegistrationStats, getFilterOptions } from "@/lib/actions/project.actions";
 import { Icon } from "@iconify/react";
+import ContributorFilters from "./components/ContributorFilters";
 
-export default async function KelolaKontributorPage() {
-  const registrations = await getRegistrations();
-  const stats = await getRegistrationStats();
+export default async function KelolaKontributorPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const params = await searchParams;
+  const filters = {
+    search: typeof params.search === "string" ? params.search : undefined,
+    topic: typeof params.topic === "string" ? params.topic : undefined,
+    location: typeof params.location === "string" ? params.location : undefined,
+    status: typeof params.status === "string" ? params.status : undefined,
+    date: typeof params.date === "string" ? params.date : undefined,
+  };
+
+  const [registrations, stats, options] = await Promise.all([
+    getRegistrations(filters),
+    getRegistrationStats(),
+    getFilterOptions(),
+  ]);
 
   const statCards = [
     { label: "Total Kontributor", value: stats.total, sub: "kontributor", color: "text-gray-900" },
@@ -40,42 +57,7 @@ export default async function KelolaKontributorPage() {
       </div>
 
       {/* Filters & Action Bar */}
-      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 mb-6">
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="relative">
-            <Icon icon="lucide:search" className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input 
-              type="text" 
-              placeholder="Search" 
-              className="pl-11 pr-4 py-2.5 w-full md:w-[320px] bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#c24136]/5 focus:border-[#c24136] transition-all"
-            />
-          </div>
-          
-          <button className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-            Kategori
-            <Icon icon="lucide:chevron-down" className="w-4 h-4 text-gray-400" />
-          </button>
-          
-          <button className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-            Provinsi
-            <Icon icon="lucide:chevron-down" className="w-4 h-4 text-gray-400" />
-          </button>
-          
-          <button className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-            Status
-            <Icon icon="lucide:chevron-down" className="w-4 h-4 text-gray-400" />
-          </button>
-
-          <button className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-            Date
-            <Icon icon="lucide:calendar" className="w-4 h-4 text-gray-400 ml-2" />
-          </button>
-        </div>
-
-        <button className="px-6 py-2.5 bg-[#c24136] text-white rounded-xl text-sm font-bold shadow-lg shadow-[#c24136]/20 transition-all hover:bg-[#a1352c]">
-          Kelola Status Persetujuan
-        </button>
-      </div>
+      <ContributorFilters options={options} />
 
       {/* Table */}
       <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">

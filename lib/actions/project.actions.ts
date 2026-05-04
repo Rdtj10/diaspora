@@ -157,9 +157,58 @@ export async function getFilterOptions() {
   }
 }
 
-export async function getRegistrations() {
+export async function getRegistrations(filters?: { 
+  search?: string; 
+  topic?: string; 
+  location?: string; 
+  status?: string; 
+  date?: string;
+}) {
   try {
+    const where: any = {};
+
+    if (filters?.search) {
+      where.OR = [
+        { user: { fullName: { contains: filters.search, mode: "insensitive" } } },
+        { user: { email: { contains: filters.search, mode: "insensitive" } } },
+        { project: { title: { contains: filters.search, mode: "insensitive" } } },
+      ];
+    }
+
+    if (filters?.topic && filters.topic !== "Semua") {
+      where.project = { 
+        ...where.project,
+        topic: filters.topic 
+      };
+    }
+
+    if (filters?.location && filters.location !== "Semua") {
+      where.project = {
+        ...where.project,
+        location: {
+          contains: filters.location,
+          mode: "insensitive",
+        },
+      };
+    }
+
+    if (filters?.status && filters.status !== "Semua") {
+      where.status = filters.status;
+    }
+
+    if (filters?.date) {
+      const date = new Date(filters.date);
+      const startOfDay = new Date(new Date(date).setHours(0, 0, 0, 0));
+      const endOfDay = new Date(new Date(date).setHours(23, 59, 59, 999));
+      
+      where.registeredAt = {
+        gte: startOfDay,
+        lte: endOfDay,
+      };
+    }
+
     const registrations = await prisma.registration.findMany({
+      where,
       include: {
         user: true,
         project: true,

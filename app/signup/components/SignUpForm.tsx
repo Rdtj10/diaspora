@@ -86,21 +86,19 @@ export function SignUpForm() {
               onClick={() => {
                 if (s < step) goToStep(s);
               }}
-              className={`w-8 h-8 rounded-full text-xs font-bold flex items-center justify-center transition-all duration-300 ${
-                s === step
+              className={`w-8 h-8 rounded-full text-xs font-bold flex items-center justify-center transition-all duration-300 ${s === step
                   ? "bg-[#c24136] text-white scale-110 shadow-md shadow-[#c24136]/30"
                   : s < step
                     ? "bg-[#1a1824] text-white cursor-pointer hover:scale-105"
                     : "bg-gray-100 text-gray-400"
-              }`}
+                }`}
             >
               {s}
             </button>
             {s < 3 && (
               <div
-                className={`w-12 h-0.5 rounded-full transition-all duration-500 ${
-                  s < step ? "bg-[#1a1824]" : "bg-gray-200"
-                }`}
+                className={`w-12 h-0.5 rounded-full transition-all duration-500 ${s < step ? "bg-[#1a1824]" : "bg-gray-200"
+                  }`}
               />
             )}
           </div>
@@ -299,7 +297,7 @@ export function SignUpForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in slide-in-from-right-4 duration-300">
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-gray-500 ml-1">
-                Institut/ Universitas
+                Institut/ Universitas / Tempat Kerja
               </label>
               <Input
                 name="university"
