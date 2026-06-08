@@ -1,12 +1,19 @@
 import { getRegistrations, getRegistrationStats, getFilterOptions } from "@/lib/actions/project.actions";
 import { Icon } from "@iconify/react";
 import ContributorFilters from "./components/ContributorFilters";
+import { getSession } from "@/lib/session";
+import { redirect } from "next/navigation";
 
 export default async function KelolaKontributorPage({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  const session = await getSession();
+  if (session?.role === "ARTICLE_ADMIN") {
+    redirect("/dashboard/artikel");
+  }
+
   const params = await searchParams;
   const filters = {
     search: typeof params.search === "string" ? params.search : undefined,

@@ -11,8 +11,8 @@ interface AdminBarProps {
 export function AdminBar({ role }: AdminBarProps) {
   const pathname = usePathname();
 
-  // Only show if user is an ADMIN
-  if (role !== "ADMIN") return null;
+  // Only show if user is an ADMIN or ARTICLE_ADMIN
+  if (role !== "ADMIN" && role !== "ARTICLE_ADMIN") return null;
 
   // Don't show the bar while on the dashboard pages itself to avoid redundancy
   if (pathname.startsWith("/dashboard")) return null;
@@ -33,7 +33,7 @@ export function AdminBar({ role }: AdminBarProps) {
         </div>
         
         <Link 
-          href="/dashboard"
+          href={role === "ARTICLE_ADMIN" ? "/dashboard/artikel" : "/dashboard"}
           className="flex items-center gap-2 px-4 py-1.5 bg-[#c24136] hover:bg-[#a1352c] rounded-full text-xs font-bold transition-all shadow-lg shadow-black/20"
         >
           <Icon icon="lucide:layout-dashboard" className="w-3.5 h-3.5" />

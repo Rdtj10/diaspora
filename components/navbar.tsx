@@ -28,6 +28,9 @@ export async function Navbar() {
           <Link href="/discover" className="hover:text-[#c24136] transition-colors">
             Discover
           </Link>
+          <Link href="/artikel" className="hover:text-[#c24136] transition-colors">
+            Artikel
+          </Link>
         </div>
       </div>
 

@@ -27,11 +27,18 @@ export async function proxy(req: NextRequest) {
         algorithms: ["HS256"],
       });
 
-      console.log(`[PROXY] Decoded Role for ${path}: ${payload.role}`);
+      const role = payload.role;
+      console.log(`[PROXY] Decoded Role for ${path}: ${role}`);
 
-      if (payload.role !== "ADMIN") {
-        console.warn(`[PROXY] Access Denied: User role is ${payload.role}. Target is ${path}. Redirecting to /`);
+      if (role !== "ADMIN" && role !== "ARTICLE_ADMIN") {
+        console.warn(`[PROXY] Access Denied: User role is ${role}. Target is ${path}. Redirecting to /`);
         return NextResponse.redirect(new URL("/", req.nextUrl));
+      }
+
+      // Enforce ARTICLE_ADMIN restriction: only allow /dashboard/artikel
+      if (role === "ARTICLE_ADMIN" && !path.startsWith("/dashboard/artikel")) {
+        console.warn(`[PROXY] Restriction Active: ARTICLE_ADMIN redirect from ${path} to /dashboard/artikel`);
+        return NextResponse.redirect(new URL("/dashboard/artikel", req.nextUrl));
       }
     } catch (err) {
       console.error(`[PROXY] JWT Verification failed:`, err);

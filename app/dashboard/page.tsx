@@ -1,8 +1,15 @@
 import prisma from "@/lib/prisma";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Link from "next/link";
+import { getSession } from "@/lib/session";
+import { redirect } from "next/navigation";
 
 export default async function AdminDashboardPage() {
+  const session = await getSession();
+  if (session?.role === "ARTICLE_ADMIN") {
+    redirect("/dashboard/artikel");
+  }
+
   // Fetch some stats for the dashboard
   const [userCount, projectCount, registrationCount] = await Promise.all([
     prisma.user.count(),

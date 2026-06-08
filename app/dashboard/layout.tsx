@@ -9,7 +9,7 @@ export default async function DashboardLayout({
 }) {
   const session = await getSession();
 
-  if (!session || session.role !== "ADMIN") {
+  if (!session || (session.role !== "ADMIN" && session.role !== "ARTICLE_ADMIN")) {
     redirect("/");
   }
 
@@ -17,7 +17,7 @@ export default async function DashboardLayout({
     <div className="flex h-screen bg-[#F9FAFB] overflow-hidden">
       {/* Sidebar */}
       <div className="flex-shrink-0">
-        <Sidebar />
+        <Sidebar role={session.role} />
       </div>
 
       {/* Main Content Area */}

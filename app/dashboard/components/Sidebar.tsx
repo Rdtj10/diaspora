@@ -5,38 +5,56 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logoutAction } from "@/lib/actions/auth.actions";
 
-const MENU_ITEMS = [
-  {
-    label: "Dashboard",
-    href: "/dashboard",
-    icon: "lucide:home",
-  },
-  {
-    label: "Kelola Topik",
-    href: "/dashboard/topics",
-    icon: "lucide:file-text",
-  },
-  {
-    label: "Kelola Kontributor",
-    href: "/dashboard/contributors",
-    icon: "lucide:users",
-  },
-  {
-    label: "Manajemen User",
-    href: "/dashboard/users",
-    icon: "lucide:user-cog",
-    hasChevron: true,
-  },
-];
+interface SidebarProps {
+  role?: string;
+}
 
-export function Sidebar() {
+export function Sidebar({ role }: SidebarProps) {
   const pathname = usePathname();
+
+  const menuItems = [
+    {
+      label: "Dashboard",
+      href: "/dashboard",
+      icon: "lucide:home",
+      roles: ["ADMIN"],
+    },
+    {
+      label: "Kelola Topik",
+      href: "/dashboard/topics",
+      icon: "lucide:file-text",
+      roles: ["ADMIN"],
+    },
+    {
+      label: "Kelola Kontributor",
+      href: "/dashboard/contributors",
+      icon: "lucide:users",
+      roles: ["ADMIN"],
+    },
+    {
+      label: "Kelola Artikel",
+      href: "/dashboard/artikel",
+      icon: "lucide:book-open",
+      roles: ["ADMIN", "ARTICLE_ADMIN"],
+    },
+    {
+      label: "Manajemen User",
+      href: "/dashboard/users",
+      icon: "lucide:user-cog",
+      roles: ["ADMIN"],
+      hasChevron: true,
+    },
+  ];
+
+  const filteredItems = menuItems.filter((item) =>
+    item.roles.includes(role || "USER")
+  );
 
   return (
     <aside className="w-64 h-full bg-white border-r border-gray-100 flex flex-col py-6">
       <div className="flex-1 px-4 space-y-2">
-        {MENU_ITEMS.map((item: any) => {
-          const isActive = pathname === item.href;
+        {filteredItems.map((item: any) => {
+          const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
           return (
             <Link
               key={item.label}
