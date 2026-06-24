@@ -53,6 +53,18 @@ export default async function ArtikelDetailPage({ params }: ArtikelDetailPagePro
         return "text-orange-600 bg-orange-50 border-orange-100";
       case "komunitas":
         return "text-emerald-600 bg-emerald-50 border-emerald-100";
+      case "diaspora":
+        return "text-rose-600 bg-rose-50 border-rose-100";
+      case "internasional":
+        return "text-violet-600 bg-violet-50 border-violet-100";
+      case "nasional":
+        return "text-cyan-600 bg-cyan-50 border-cyan-100";
+      case "politik":
+        return "text-amber-700 bg-amber-50 border-amber-100";
+      case "berita nasional":
+        return "text-teal-600 bg-teal-50 border-teal-100";
+      case "berita internasional":
+        return "text-indigo-600 bg-indigo-50 border-indigo-100";
       default:
         return "text-gray-600 bg-gray-50 border-gray-100";
     }
@@ -60,7 +72,42 @@ export default async function ArtikelDetailPage({ params }: ArtikelDetailPagePro
 
   // Helper to parse and render simple markdown string to beautiful React elements
   const renderArticleContent = (text: string) => {
-    const blocks = text.trim().split("\n\n");
+    // Normalize line breaks
+    let processedText = text.replace(/\r\n/g, "\n").trim();
+
+    // Check if the text is "menyatu semua" (i.e. only 1 paragraph or block, or no double-newlines)
+    const lines = processedText.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+    const hasDoubleNewlines = processedText.includes("\n\n");
+    
+    // If it's a single block of text and is long (>300 characters), let's split it into beautiful paragraphs by sentence
+    if ((lines.length <= 1 || !hasDoubleNewlines) && processedText.length > 300) {
+      const sentences = processedText.match(/[^.!?]+[.!?]+(?:\s+|$)|[^.!?]+$/g) || [processedText];
+      
+      const beautifiedParagraphs: string[] = [];
+      let currentPara: string[] = [];
+      
+      for (const sentence of sentences) {
+        const trimmedSentence = sentence.trim();
+        if (!trimmedSentence) continue;
+        
+        currentPara.push(trimmedSentence);
+        const currentParaLength = currentPara.join(" ").length;
+        
+        // Group by 3 sentences or roughly 350-400 characters
+        if (currentPara.length >= 3 || currentParaLength >= 350) {
+          beautifiedParagraphs.push(currentPara.join(" "));
+          currentPara = [];
+        }
+      }
+      
+      if (currentPara.length > 0) {
+        beautifiedParagraphs.push(currentPara.join(" "));
+      }
+      
+      processedText = beautifiedParagraphs.join("\n\n");
+    }
+
+    const blocks = processedText.split("\n\n");
     return blocks.map((block, i) => {
       const trimmedBlock = block.trim();
       
@@ -100,9 +147,9 @@ export default async function ArtikelDetailPage({ params }: ArtikelDetailPagePro
         );
       }
       
-      // Paragraph text
+      // Paragraph text with whitespace-pre-wrap to respect single newlines/breaks
       return (
-        <p key={i} className="text-gray-600 font-medium leading-relaxed mb-6 text-[15px] md:text-base">
+        <p key={i} className="whitespace-pre-wrap text-gray-600 font-medium leading-relaxed mb-6 text-[15px] md:text-base">
           {trimmedBlock}
         </p>
       );

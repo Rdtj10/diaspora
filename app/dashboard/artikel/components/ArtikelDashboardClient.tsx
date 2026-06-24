@@ -57,6 +57,18 @@ export function ArtikelDashboardClient({ initialArticles }: ArtikelDashboardClie
         return "text-orange-600 bg-orange-50 border-orange-100";
       case "komunitas":
         return "text-emerald-600 bg-emerald-50 border-emerald-100";
+      case "diaspora":
+        return "text-rose-600 bg-rose-50 border-rose-100";
+      case "internasional":
+        return "text-violet-600 bg-violet-50 border-violet-100";
+      case "nasional":
+        return "text-cyan-600 bg-cyan-50 border-cyan-100";
+      case "politik":
+        return "text-amber-700 bg-amber-50 border-amber-100";
+      case "berita nasional":
+        return "text-teal-600 bg-teal-50 border-teal-100";
+      case "berita internasional":
+        return "text-indigo-600 bg-indigo-50 border-indigo-100";
       default:
         return "text-gray-600 bg-gray-50 border-gray-100";
     }
@@ -346,6 +358,12 @@ export function ArtikelDashboardClient({ initialArticles }: ArtikelDashboardClie
                       <option value="Karir">Karir</option>
                       <option value="Budaya">Budaya</option>
                       <option value="Komunitas">Komunitas</option>
+                      <option value="Diaspora">Diaspora</option>
+                      <option value="Internasional">Internasional</option>
+                      <option value="Nasional">Nasional</option>
+                      <option value="Politik">Politik</option>
+                      <option value="Berita Nasional">Berita Nasional</option>
+                      <option value="Berita Internasional">Berita Internasional</option>
                     </select>
                     {errors?.category && <p className="text-red-500 text-[10px] ml-1">{errors.category[0]}</p>}
                   </div>

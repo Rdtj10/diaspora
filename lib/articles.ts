@@ -241,6 +241,17 @@ export async function getCategories(): Promise<string[]> {
     return articles.map((a: any) => a.category);
   } catch (err) {
     console.error("Fetch categories error:", err);
-    return ["Pendidikan", "Karir", "Budaya", "Komunitas"];
+    return [
+      "Pendidikan",
+      "Karir",
+      "Budaya",
+      "Komunitas",
+      "Diaspora",
+      "Internasional",
+      "Nasional",
+      "Politik",
+      "Berita Nasional",
+      "Berita Internasional"
+    ];
   }
 }
