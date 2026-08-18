@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { createArticleAction, deleteArticleAction } from "@/lib/actions/article.actions";
+import { createArticleAction, updateArticleAction, deleteArticleAction } from "@/lib/actions/article.actions";
 
 interface Article {
   id: string;
@@ -31,6 +31,7 @@ export function ArtikelDashboardClient({ initialArticles }: ArtikelDashboardClie
   const [articles, setArticles] = useState<Article[]>(initialArticles);
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<any>(null);
 
@@ -79,6 +80,40 @@ export function ArtikelDashboardClient({ initialArticles }: ArtikelDashboardClie
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleOpenCreateModal = () => {
+    setEditingId(null);
+    setForm({
+      title: "",
+      excerpt: "",
+      content: "",
+      coverImage: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=800",
+      category: "Pendidikan",
+      readTime: "5 min baca",
+      authorName: "",
+      authorAvatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=150",
+      authorRole: "",
+    });
+    setErrors(null);
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEditModal = (article: Article) => {
+    setEditingId(article.id);
+    setForm({
+      title: article.title,
+      excerpt: article.excerpt,
+      content: article.content,
+      coverImage: article.coverImage,
+      category: article.category,
+      readTime: article.readTime,
+      authorName: article.author.name,
+      authorAvatar: article.author.avatar,
+      authorRole: article.author.role,
+    });
+    setErrors(null);
+    setIsModalOpen(true);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -89,48 +124,66 @@ export function ArtikelDashboardClient({ initialArticles }: ArtikelDashboardClie
       formData.append(key, val);
     });
 
+    if (editingId) {
+      formData.append("id", editingId);
+    }
+
     try {
-      const result = await createArticleAction(formData);
+      const result = editingId
+        ? await updateArticleAction(formData)
+        : await createArticleAction(formData);
 
       if (result.error) {
         setErrors(result.error);
-        toast.error("Gagal mengunggah artikel. Periksa kembali form isian.");
+        toast.error(editingId ? "Gagal memperbarui artikel. Periksa kembali form isian." : "Gagal mengunggah artikel. Periksa kembali form isian.");
       } else {
-        toast.success("Artikel berhasil dipublikasikan!");
+        toast.success(editingId ? "Artikel berhasil diperbarui!" : "Artikel berhasil dipublikasikan!");
         setIsModalOpen(false);
-        // Reset form
-        setForm({
-          title: "",
-          excerpt: "",
-          content: "",
-          coverImage: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=800",
-          category: "Pendidikan",
-          readTime: "5 min baca",
-          authorName: "",
-          authorAvatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=150",
-          authorRole: "",
-        });
-        
-        // Refresh local state by simulating fetch or mapping values
-        // Generate temporary slug and date for optimistic local updates
-        const tempSlug = form.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-        const newArt: Article = {
-          id: Math.random().toString(),
-          slug: tempSlug,
-          title: form.title,
-          excerpt: form.excerpt,
-          content: form.content,
-          coverImage: form.coverImage,
-          category: form.category,
-          readTime: form.readTime,
-          publishedAt: new Date().toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }),
-          author: {
-            name: form.authorName,
-            avatar: form.authorAvatar,
-            role: form.authorRole,
-          }
-        };
-        setArticles([newArt, ...articles]);
+
+        const tempSlug = form.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
+
+        if (editingId) {
+          setArticles((prev) =>
+            prev.map((art) => {
+              if (art.id === editingId) {
+                return {
+                  ...art,
+                  slug: tempSlug,
+                  title: form.title,
+                  excerpt: form.excerpt,
+                  content: form.content,
+                  coverImage: form.coverImage,
+                  category: form.category,
+                  readTime: form.readTime,
+                  author: {
+                    name: form.authorName,
+                    avatar: form.authorAvatar,
+                    role: form.authorRole,
+                  },
+                };
+              }
+              return art;
+            })
+          );
+        } else {
+          const newArt: Article = {
+            id: Math.random().toString(),
+            slug: tempSlug,
+            title: form.title,
+            excerpt: form.excerpt,
+            content: form.content,
+            coverImage: form.coverImage,
+            category: form.category,
+            readTime: form.readTime,
+            publishedAt: new Date().toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }),
+            author: {
+              name: form.authorName,
+              avatar: form.authorAvatar,
+              role: form.authorRole,
+            },
+          };
+          setArticles([newArt, ...articles]);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -174,7 +227,7 @@ export function ArtikelDashboardClient({ initialArticles }: ArtikelDashboardClie
           </p>
         </div>
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={handleOpenCreateModal}
           className="px-6 py-3 bg-[#c24136] text-white rounded-full text-sm font-bold shadow-lg shadow-[#c24136]/20 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] cursor-pointer"
         >
           <Icon icon="lucide:plus" className="w-4 h-4" />
@@ -284,18 +337,25 @@ export function ArtikelDashboardClient({ initialArticles }: ArtikelDashboardClie
 
                     {/* Actions */}
                     <td className="px-6 py-5">
-                      <div className="flex items-center justify-center gap-2.5">
+                      <div className="flex items-center justify-center gap-2">
                         <Link
                           href={`/artikel/${art.slug}`}
                           target="_blank"
-                          className="px-3.5 py-1.5 border border-gray-200 rounded-xl text-xs font-bold text-gray-600 hover:bg-gray-50 hover:text-black transition-all flex items-center gap-1 cursor-pointer"
+                          className="px-3 py-1.5 border border-gray-200 rounded-xl text-xs font-bold text-gray-600 hover:bg-gray-50 hover:text-black transition-all flex items-center gap-1 cursor-pointer"
                         >
                           <Icon icon="lucide:external-link" className="w-3.5 h-3.5" />
                           Buka
                         </Link>
                         <button
+                          onClick={() => handleOpenEditModal(art)}
+                          className="px-3 py-1.5 border border-blue-200 rounded-xl text-xs font-bold text-blue-600 hover:bg-blue-50 transition-all flex items-center gap-1 cursor-pointer"
+                        >
+                          <Icon icon="lucide:pencil" className="w-3.5 h-3.5" />
+                          Edit
+                        </button>
+                        <button
                           onClick={() => handleDelete(art.id, art.title)}
-                          className="px-3.5 py-1.5 border border-red-200 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition-all flex items-center gap-1 cursor-pointer"
+                          className="px-3 py-1.5 border border-red-200 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition-all flex items-center gap-1 cursor-pointer"
                         >
                           <Icon icon="lucide:trash-2" className="w-3.5 h-3.5" />
                           Hapus
@@ -316,15 +376,17 @@ export function ArtikelDashboardClient({ initialArticles }: ArtikelDashboardClie
         </div>
       </div>
 
-      {/* Upload Modal Dialog */}
+      {/* Upload/Edit Modal Dialog */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 overflow-y-auto animate-in fade-in duration-300">
           <div className="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl border border-gray-100 overflow-hidden transform animate-in zoom-in-95 duration-300">
             {/* Modal Header */}
             <div className="px-8 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
               <div className="flex items-center gap-2">
-                <Icon icon="lucide:book-open" className="w-5 h-5 text-[#c24136]" />
-                <h3 className="text-base font-bold text-gray-900">Tulis & Publikasikan Artikel Baru</h3>
+                <Icon icon={editingId ? "lucide:pencil" : "lucide:book-open"} className="w-5 h-5 text-[#c24136]" />
+                <h3 className="text-base font-bold text-gray-900">
+                  {editingId ? "Edit Artikel" : "Tulis & Publikasikan Artikel Baru"}
+                </h3>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
@@ -530,12 +592,12 @@ export function ArtikelDashboardClient({ initialArticles }: ArtikelDashboardClie
                   {isLoading ? (
                     <>
                       <Icon icon="lucide:loader-2" className="w-3.5 h-3.5 animate-spin" />
-                      Memposting...
+                      {editingId ? "Menyimpan..." : "Memposting..."}
                     </>
                   ) : (
                     <>
-                      <Icon icon="lucide:send" className="w-3.5 h-3.5" />
-                      Publikasikan
+                      <Icon icon={editingId ? "lucide:check" : "lucide:send"} className="w-3.5 h-3.5" />
+                      {editingId ? "Simpan Perubahan" : "Publikasikan"}
                     </>
                   )}
                 </button>
